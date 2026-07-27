@@ -90,10 +90,29 @@ Server=tcp:medshift-demo-xxxx.database.windows.net,1433;Initial Catalog=MedShift
 เลือกอย่างใดอย่างหนึ่ง:
 
 **A) GitHub Actions / Deployment Center (แนะนำ)**  
-1. Web App → **Deployment Center**  
-2. เชื่อม GitHub → เลือก repo / branch  
-3. โฟลเดอร์โปรเจกต์ API: `api/src/MedShift.Api` (หรือตั้งให้ build solution แล้ว publish โปรเจกต์นี้)  
-4. Save แล้วรอ deploy สำเร็จ
+1. Web App → **Deployment Center** → เชื่อม GitHub → repo / branch `main`  
+2. แก้ workflow ที่ Azure สร้าง (หรือใช้ไฟล์ใน repo):  
+   [`.github/workflows/medshift-api-azure.yml`](../.github/workflows/medshift-api-azure.yml)  
+3. จุดสำคัญที่ต้องแก้จาก template เดิม:
+   - `dotnet-version: '9.0.x'` (โปรเจกต์เป็น `net9.0` ไม่ใช่ 10)
+   - `dotnet build` / `publish` ต้องมี path:  
+     `api/src/MedShift.Api/MedShift.Api.csproj`
+4. ชื่อ Web App ใน `AZURE_WEBAPP_NAME` ต้องตรงกับใน Azure  
+5. Secret `publish-profile` ใช้ชื่อที่ Deployment Center สร้างให้ (อาจเป็น `AZUREAPPSERVICE_PUBLISHPROFILE` หรือคล้ายกัน) — อย่าลบ secret ใน GitHub  
+6. Push ขึ้น `main` แล้วดูแท็บ **Actions**
+
+ตัวอย่างขั้น build ที่ถูก:
+
+```yaml
+env:
+  PROJECT: api/src/MedShift.Api/MedShift.Api.csproj
+  DOTNET_VERSION: '9.0.x'
+
+# ...
+- run: dotnet restore ${{ env.PROJECT }}
+- run: dotnet build ${{ env.PROJECT }} -c Release --no-restore
+- run: dotnet publish ${{ env.PROJECT }} -c Release -o ${{ env.DOTNET_ROOT }}/myapp --no-build
+```
 
 **B) จากเครื่อง (ครั้งแรกทดลอง)**  
 
