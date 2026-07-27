@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/MedShift.Api/MedShift.Api.csproj" />
+    <Project Path="src/MedShift.Application/MedShift.Application.csproj" />
+    <Project Path="src/MedShift.Domain/MedShift.Domain.csproj" />
+    <Project Path="src/MedShift.Infrastructure/MedShift.Infrastructure.csproj" />
+  </Folder>
+</Solution>

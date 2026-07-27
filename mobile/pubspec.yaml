@@ -1,0 +1,73 @@
+name: medshift_thailand
+description: "Medical Staffing Marketplace with Waitlist Model for Thailand"
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.10.8
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  # State Management
+  provider: ^6.1.1
+
+  # Networking
+  dio: ^5.4.0
+
+  # UI & Fonts
+  google_fonts: ^8.1.0
+
+  # Date & Time
+  intl: ^0.20.0
+  table_calendar: ^3.0.9
+
+  # Location & Maps
+  geolocator: ^14.0.2
+  google_maps_flutter: ^2.5.0
+
+  # Storage
+  shared_preferences: ^2.2.2
+
+  # UUID Generation
+  uuid: ^4.2.2
+
+  # PDF Generation
+  pdf: ^3.10.0
+  printing: ^5.11.0
+  path_provider: ^2.1.1
+
+  cupertino_icons: ^1.0.8
+  firebase_core: ^4.10.0
+  firebase_messaging: ^16.3.0
+  url_launcher: ^6.3.2
+  image_picker: ^1.1.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.3
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/app_icon.png"
+  min_sdk_android: 21
+  web:
+    generate: true
+    image_path: "assets/icon/app_icon.png"
+  windows:
+    generate: true
+    image_path: "assets/icon/app_icon.png"
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/icon/

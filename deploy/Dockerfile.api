@@ -1,0 +1,19 @@
+# MedShift API — multi-arch (amd64 + arm64 for Oracle Ampere)
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+WORKDIR /src
+COPY src/MedShift.Domain/MedShift.Domain.csproj MedShift.Domain/
+COPY src/MedShift.Application/MedShift.Application.csproj MedShift.Application/
+COPY src/MedShift.Infrastructure/MedShift.Infrastructure.csproj MedShift.Infrastructure/
+COPY src/MedShift.Api/MedShift.Api.csproj MedShift.Api/
+RUN dotnet restore MedShift.Api/MedShift.Api.csproj
+COPY src/ ./
+RUN dotnet publish MedShift.Api/MedShift.Api.csproj -c Release -o /app/publish /p:UseAppHost=false
+
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
+WORKDIR /app
+RUN mkdir -p /app/wwwroot/uploads/profiles /app/wwwroot/uploads/staff-docs
+ENV ASPNETCORE_URLS=http://+:8080
+ENV ASPNETCORE_ENVIRONMENT=Production
+EXPOSE 8080
+COPY --from=build /app/publish .
+ENTRYPOINT ["dotnet", "MedShift.Api.dll"]

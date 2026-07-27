@@ -1,0 +1,22 @@
+# MedShift free-tier reverse proxy (optional)
+# Replace medshift.example.com with your domain (A record → Oracle VM public IP)
+
+{$DOMAIN:localhost} {
+	encode gzip
+
+	# API + uploaded KYC / profile files
+	handle /api/* {
+		reverse_proxy api:8080
+	}
+	handle /uploads/* {
+		reverse_proxy api:8080
+	}
+	handle /openapi/* {
+		reverse_proxy api:8080
+	}
+
+	# Clinic / Admin Next.js
+	handle {
+		reverse_proxy web:3000
+	}
+}
