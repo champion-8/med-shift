@@ -1,17 +1,13 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
 name: Build and deploy ASP.Net Core app to Azure Web App - medshift-api-demo
 
 on:
   push:
     branches:
       - main
-    paths:
-      - "api/**"
-      - ".github/workflows/main_medshift-api-demo.yml"
   workflow_dispatch:
-
-permissions:
-  id-token: write
-  contents: read
 
 env:
   PROJECT: api/src/MedShift.Api/MedShift.Api.csproj
@@ -22,7 +18,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: read #This is required for actions/checkout
 
     steps:
       - uses: actions/checkout@v4
@@ -35,20 +31,21 @@ jobs:
       - name: Restore
         run: dotnet restore ${{ env.PROJECT }}
 
-      - name: Publish
+      - name: dotnet publish
         run: dotnet publish ${{ env.PROJECT }} -c Release -o ${{ env.DOTNET_ROOT }}/myapp --no-restore
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: .net-app
-          path: ${{ env.DOTNET_ROOT }}/myapp
+          path: ${{env.DOTNET_ROOT}}/myapp
 
   deploy:
     runs-on: ubuntu-latest
     needs: build
     permissions:
-      contents: read
+      id-token: write #This is required for requesting the JWT
+      contents: read #This is required for actions/checkout
 
     steps:
       - name: Download artifact from build job
@@ -67,7 +64,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: ${{ env.AZURE_WEBAPP_NAME }}
-          slot-name: Production
+          app-name: "medshift-api-demo"
+          slot-name: "Production"
           package: .
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
