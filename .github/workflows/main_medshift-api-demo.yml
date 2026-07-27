@@ -1,5 +1,6 @@
 # Docs: https://github.com/Azure/webapps-deploy
-# Fixed for monorepo: api/src/MedShift.Api (net9.0)
+# Monorepo: api/src/MedShift.Api (net9.0)
+# Auth: publish profile (avoids OIDC federated-identity subject mismatch)
 
 name: Build and deploy ASP.Net Core app to Azure Web App - medshift-api-demo
 
@@ -15,6 +16,7 @@ on:
 env:
   PROJECT: api/src/MedShift.Api/MedShift.Api.csproj
   DOTNET_VERSION: '9.0.x'
+  AZURE_WEBAPP_NAME: medshift-api-demo
 
 jobs:
   build:
@@ -46,7 +48,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     permissions:
-      id-token: write
       contents: read
 
     steps:
@@ -55,17 +56,11 @@ jobs:
         with:
           name: .net-app
 
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_4E9896E58DFB4C1F90B41C3236367B41 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_B10F7674EDBB44AFA3007FEC4C1E9B76 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_18C958CCB5AF4132AFD214DEE8ACE860 }}
-
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'medshift-api-demo'
-          slot-name: 'Production'
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          slot-name: Production
           package: .
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}

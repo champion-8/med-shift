@@ -97,8 +97,17 @@ Server=tcp:medshift-demo-xxxx.database.windows.net,1433;Initial Catalog=MedShift
    - `dotnet-version: '9.0.x'`
    - `dotnet restore` / `publish` ต้องมี path โปรเจกต์ — **ห้าม** `dotnet build --configuration Release` เปล่าที่ root
 4. Push ขึ้น `main` แล้วดูแท็บ **Actions**
+5. ถ้าขั้น **Azure Login (OIDC)** พังด้วย `AADSTS700213` / federated identity → ใช้ **publish profile** แทน (workflow ใน repo ใช้วิธีนี้แล้ว):
 
-ตัวอย่างขั้นที่ถูก:
+   1. Azure Portal → Web App `medshift-api-demo` → **Download publish profile**  
+   2. GitHub repo → **Settings** → **Secrets and variables** → **Actions** → **New repository secret**  
+   3. Name: `AZUREAPPSERVICE_PUBLISHPROFILE`  
+   4. Value: วางเนื้อหาไฟล์ `.PublishSettings` ทั้งก้อน → Save  
+   5. รัน workflow ใหม่
+
+   (ข้อความ Node 20 deprecated เป็นแค่ warning จาก action เก่า — ไม่ใช่สาเหตุ login พัง)
+
+ตัวอย่างขั้น build ที่ถูก:
 
 ```yaml
 env:
